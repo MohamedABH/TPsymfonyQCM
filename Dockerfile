@@ -12,4 +12,10 @@ WORKDIR /app
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+COPY composer.json composer.lock ./
+RUN composer install --no-scripts --no-interaction --prefer-dist
+
+COPY . .
+RUN composer run-script auto-scripts || true
+
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "public/index.php"]

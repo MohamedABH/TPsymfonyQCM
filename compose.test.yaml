@@ -1,0 +1,14 @@
+services:
+  database:
+    ports:
+      - "3309:3306"
+    volumes:
+      - database_test_data:/var/lib/mysql:rw
+    env_file:
+      - .env.test.local
+  app:
+    env_file:
+      - .env.test.local
+
+volumes:
+  database_test_data:
