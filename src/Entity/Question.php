@@ -25,13 +25,17 @@ class Question
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', orphanRemoval: true)]
     private Collection $answers;
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Quizz $quizz = null;
+    /**
+     * @var Collection<int, Quizz>
+     */
+    #[ORM\ManyToMany(targetEntity: Quizz::class, inversedBy: 'questions')]
+    private Collection $quizz;
+
 
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+        $this->quizz = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,15 +85,28 @@ class Question
         return $this;
     }
 
-    public function getQuizz(): ?Quizz
+    /**
+     * @return Collection<int, Quizz>
+     */
+    public function getQuizz(): Collection
     {
         return $this->quizz;
     }
 
-    public function setQuizz(?Quizz $quizz): static
+    public function addQuizz(Quizz $quizz): static
     {
-        $this->quizz = $quizz;
+        if (!$this->quizz->contains($quizz)) {
+            $this->quizz->add($quizz);
+        }
 
         return $this;
     }
+
+    public function removeQuizz(Quizz $quizz): static
+    {
+        $this->quizz->removeElement($quizz);
+
+        return $this;
+    }
+
 }

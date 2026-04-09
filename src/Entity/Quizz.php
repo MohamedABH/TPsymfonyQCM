@@ -25,7 +25,7 @@ class Quizz
     /**
      * @var Collection<int, Question>
      */
-    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quizz', orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Question::class, mappedBy: 'quizz')]
     private Collection $questions;
 
     public function __construct()
@@ -74,7 +74,7 @@ class Quizz
     {
         if (!$this->questions->contains($question)) {
             $this->questions->add($question);
-            $question->setQuizz($this);
+            $question->addQuizz($this);
         }
 
         return $this;
@@ -83,12 +83,10 @@ class Quizz
     public function removeQuestion(Question $question): static
     {
         if ($this->questions->removeElement($question)) {
-            // set the owning side to null (unless already changed)
-            if ($question->getQuizz() === $this) {
-                $question->setQuizz(null);
-            }
+            $question->removeQuizz($this);
         }
 
         return $this;
     }
+
 }
