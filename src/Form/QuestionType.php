@@ -10,15 +10,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-class QuizzType extends AbstractType
+class QuestionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('questions', CollectionType::class, [
-                'entry_type' => QuestionType::class,
+            ->add('text')
+            ->add('answers', CollectionType::class, [
+                'entry_type' => AnswerType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
@@ -30,7 +29,7 @@ class QuizzType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Quizz::class,
+            'data_class' => Question::class,
         ]);
     }
 }

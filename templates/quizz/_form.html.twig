@@ -1,4 +1,74 @@
+{% macro answer_row(answerForm) %}
+    <div class="answer-item">
+        {{ form_row(answerForm.text) }}
+        {{ form_row(answerForm.isCorrect) }}
+    </div>
+{% endmacro %}
+
+{% macro question_row(questionForm) %}
+    {% import _self as macros %}
+
+    <div class="question-item">
+        {{ form_row(questionForm.text) }}
+
+        <div class="answers"
+             data-index="{{ questionForm.answers|length }}"
+             data-prototype="{{ macros.answer_row(questionForm.answers.vars.prototype)|e('html_attr') }}">
+            {% for answerForm in questionForm.answers %}
+                {{ macros.answer_row(answerForm) }}
+            {% endfor %}
+        </div>
+
+        <button type="button" class="add-answer">Add answer</button>
+    </div>
+{% endmacro %}
+
+{% import _self as macros %}
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.description) }}
+
+    <div id="questions"
+         data-index="{{ form.questions|length }}"
+         data-prototype="{{ macros.question_row(form.questions.vars.prototype)|e('html_attr') }}">
+        {% for questionForm in form.questions %}
+            {{ macros.question_row(questionForm) }}
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-question">Add question</button>
+
+    {% if form._token is defined %}
+        {{ form_row(form._token) }}
+    {% endif %}
+
     <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{{ form_end(form, {render_rest: false}) }}
+
+<script>
+function addCollectionItem(container) {
+    const index = container.dataset.index;
+    const template = container.dataset.prototype.replace(/__name__/g, index);
+    const wrapper = document.createElement('div');
+
+    wrapper.innerHTML = template;
+    container.appendChild(wrapper.firstElementChild);
+    container.dataset.index = parseInt(index, 10) + 1;
+}
+
+document.getElementById('add-question').addEventListener('click', function () {
+    addCollectionItem(document.getElementById('questions'));
+});
+
+document.addEventListener('click', function (event) {
+    if (!event.target.classList.contains('add-answer')) {
+        return;
+    }
+
+    const questionItem = event.target.closest('.question-item');
+    const answersContainer = questionItem.querySelector('.answers');
+
+    addCollectionItem(answersContainer);
+});
+</script>

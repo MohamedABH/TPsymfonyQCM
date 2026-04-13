@@ -2,35 +2,27 @@
 
 namespace App\Form;
 
+use App\Entity\Answer;
 use App\Entity\Question;
-use App\Entity\Quizz;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-class QuizzType extends AbstractType
+class AnswerType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('questions', CollectionType::class, [
-                'entry_type' => QuestionType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'prototype' => true,
-            ])
+            ->add('text')
+            ->add('isCorrect')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Quizz::class,
+            'data_class' => Answer::class,
         ]);
     }
 }
