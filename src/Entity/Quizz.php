@@ -25,7 +25,7 @@ class Quizz
     /**
      * @var Collection<int, Question>
      */
-    #[ORM\ManyToMany(targetEntity: Question::class, mappedBy: 'quizz')]
+    #[ORM\ManyToMany(targetEntity: Question::class, mappedBy: 'quizz', cascade: ['persist'])]
     private Collection $questions;
 
     /**

@@ -22,7 +22,7 @@ class Question
     /**
      * @var Collection<int, Answer>
      */
-    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', orphanRemoval: true, cascade: ['persist'])]
     private Collection $answers;
 
     /**
